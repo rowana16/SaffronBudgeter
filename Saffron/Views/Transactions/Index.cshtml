@@ -1,0 +1,162 @@
+﻿@using Saffron.Models
+@model TransactionViewModel
+
+@{
+    ViewBag.Title = "Transactions Index";
+
+}
+
+<h2>Transactions</h2>
+
+
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <button data-toggle="collapse" data-target="#addRow" class="btn btn-primary"><i class="fa fa-plus"></i> Create New</button>
+                    <div class="ibox-tools">
+                        @*<a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>*@
+                        @*<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-wrench"></i>
+                            </a>*@
+                        <ul class="dropdown-menu dropdown-user">
+                            <li>
+                                <a href="#">Config option 1</a>
+                            </li>
+                            <li>
+                                <a href="#">Config option 2</a>
+                            </li>
+                        </ul>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="collapse" id="addRow">
+                        @using (Html.BeginForm("Create", "Transactions"))
+                        {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Account</th>
+                                        <th>Category</th>
+                                        <th>Type</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        @*<th>Reconciled? </th>*@
+
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                @Html.AntiForgeryToken()
+                                <tbody>
+                                    <tr>
+                                        <td>@Html.DropDownList("AccountId", null, htmlAttributes: new { @class = "form-control" }) </td>
+                                        <td>@Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "form-control" })</td>
+                                        <td>@Html.DropDownList("TypeTransactionId", null, htmlAttributes: new { @class = "form-control" })</td>
+                                        <td>@Html.Editor("Date", new { htmlAttributes = new { @class = "form-control pickdate" } })</td>
+                                        <td>@Html.Editor("Amount", new { htmlAttributes = new { @class = "form-control " } })</td>
+                                        @*<td>@Html.CheckBox("Reconciled", false)</td>*@
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <input type="submit" value="Save Transaction" class="btn btn-warning" />
+                        }
+
+
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>All Transactions</h5>
+                    <div class="ibox-tools">
+                        @*<a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>*@
+                        @*<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-wrench"></i>
+                            </a>*@
+                        <ul class="dropdown-menu dropdown-user">
+                            <li>
+                                <a href="#">Config option 1</a>
+                            </li>
+                            <li>
+                                <a href="#">Config option 2</a>
+                            </li>
+                        </ul>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+
+                    <div>
+
+                        <table class="table" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>Account</th>
+                                    <th>Category</th>
+                                    <th>Type</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+
+                                    @*<th>Reconciled? </th>*@
+
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.currTransactions)
+            {
+
+                                    <tr>
+                                        <td>@item.Account.Institution.Name - @item.Account.AccountType.Name </td>
+                                        <td>@item.Category.Name</td>
+                                        <td>@item.Type.Name</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Date)</td>
+                                        <td>$@Html.DisplayFor(modelItem => item.Amount)</td>
+                                        @*<td>@Html.DisplayFor(modelItem => item.Reconciled)</td>*@
+
+                                        <td>
+                                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                            @*@Html.ActionLink("Details", "Details", new { id=item.Id }) |*@
+                                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                        </td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                    @section scripts {
+                        <script>
+                            $(document).ready(function () {
+                                $('#myTable').DataTable();
+                            })
+
+                        </script>
+                    }
+

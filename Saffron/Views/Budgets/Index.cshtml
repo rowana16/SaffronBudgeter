@@ -1,0 +1,88 @@
+﻿@using Saffron.Models
+@model BudgetTransactionViewModel
+
+@{
+    ViewBag.Title = "Budgets";
+    int i = 1;
+    int x = 1;
+}
+
+
+
+@*<button class="btn btn-primary"><i class='fa fa-plus'></li>
+    @Html.ActionLink(" Create New Budget", "Create", null, new { @class = "btn btn-primary" })
+</button>*@
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Budget Items</h5>
+                    <div class="ibox-tools">
+                        @*<a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>*@
+                        @*<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-wrench"></i>
+                            </a>*@
+                        <ul class="dropdown-menu dropdown-user">
+                            <li>
+                                <a href="#">Config option 1</a>
+                            </li>
+                            <li>
+                                <a href="#">Config option 2</a>
+                            </li>
+                        </ul>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+
+                    @foreach (var Graphitem in Model.GraphData)
+                    {
+
+                        <h4> @Graphitem.CategoryName  </h4>
+                        string graph = "a" + @i;
+                        <div class="ct-chart" id="@graph"></div>
+                        i++;
+
+
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+<script>
+
+    $(document).ready(function () {
+        @foreach (var GraphItem in Model.GraphData)
+        {
+            string divId = "a" + @x;
+
+            //string data = "{ labels: ['Spent', 'Budgeted'], series: [ [" + GraphItem.SumValue + "], ["+ GraphItem.TotalValue + "] ]}";
+            //string options = "{ high: 100, low: 0, seriesBarDistance: 30, horizontalBars: true, axisY: { offset: 50 } }";
+            string data = "{  series: [ [" + GraphItem.SumValue + "], [" + GraphItem.TotalValue + "] ]}";
+            string options = "{ high: 100, low: 0,  seriesBarDistance: 10, reverseData: true, horizontalBars: true, axisY: { offset: 0 } }";
+            string Chartstring = "new Chartist.Bar('#" + @divId + "'," + @data + " , " + @options + ")";
+<text>
+                    @Html.Raw(Chartstring);
+
+
+</text>
+            x++;
+
+        }
+
+    })
+
+</script>
+
+    }
