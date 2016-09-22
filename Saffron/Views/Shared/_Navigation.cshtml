@@ -48,8 +48,9 @@
             @if (ViewBag.currUser != null)
             {
                 <li>
-                <i class="fa fa-plus btn btn-warning" href ="/BankAccounts/Create/">   Create New Account</i>
+                    <a href ="@Url.Action("Create", "BankAccounts")"><i class="fa fa-plus btn btn-warning" >   Create New Account</i></a>
                 </li>
+
                 <li class="@Html.IsSelected(action: "Index")">
                     <a href="@Url.Action("Index", "Home")"><i class="fa fa-dollar"></i> <span class="nav-label">Savings Accounts</span> </a>
                     <ul>

@@ -13,6 +13,7 @@ namespace Saffron.Models
         public List<Transaction> Transactions { get; set; }
         public List<BudgetViewItem> GraphData { get; set; }
         
+        
 
     }
 
@@ -30,11 +31,13 @@ namespace Saffron.Models
 
     public class BudgetViewItem
     {
+        public int BudgetItemId { get; set; }
         public int CategoryId { get; set; }
         public float BudgetTotal { get; set; } 
         public string CategoryName { get; set; }
         public string TotalValue { get; set; }
-        public string SumValue { get; set; }        
+        public string SumValue { get; set; } 
+        public int TransactionCount { get; set; }       
 
     }
 }

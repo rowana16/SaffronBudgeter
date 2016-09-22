@@ -44,7 +44,7 @@
                     @foreach (var Graphitem in Model.GraphData)
                     {
 
-                        <h4> @Graphitem.CategoryName  </h4>
+                        <h4> @Graphitem.CategoryName  - Id: @Graphitem.BudgetItemId - Transactions: @Graphitem.TransactionCount</h4>
                         string graph = "a" + @i;
                         <div class="ct-chart" id="@graph"></div>
                         i++;

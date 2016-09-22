@@ -24,11 +24,12 @@ namespace Saffron.Controllers
             {
                 viewModel.Accounts = currUser.Household.Accounts.ToList();
                 viewModel.Types = db.AccountType.ToList();
+                return View(viewModel);
             }
-            
 
 
-            return View(viewModel);
+
+            return RedirectToAction("index", "Budgets");
         }
 
         // GET: BankAccounts/Details/5
@@ -55,6 +56,8 @@ namespace Saffron.Controllers
         public ActionResult Create()
         {
             ViewBag.HouseholdId = new SelectList(db.Household, "Id", "Name");
+            ViewBag.AccountType = new SelectList(db.AccountType, "Id", "Name");
+            ViewBag.InstitutionName = new SelectList(db.Institution, "Id", "Name");
             return View();
         }
 
@@ -62,18 +65,27 @@ namespace Saffron.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Balance,ReconciledBalance,HouseholdId,InstitutionId,AccountTypeId")] Account account)
+        public ActionResult Create(int AccountType, int Institution, float Balance, Account newAccount)
         {
-            if (ModelState.IsValid)
-            {
-                db.Account.Add(account);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+            ApplicationUser currUser = db.Users.Find(User.Identity.GetUserId());
+            newAccount.HouseholdId = (int)currUser.HouseholdId;
+            newAccount.AccountTypeId = AccountType;
+            newAccount.InstitutionId = Institution;
+            newAccount.Name = db.Institution.Find(Institution).Name + " " + db.AccountType.Find(AccountType).Name;
+            newAccount.Balance = Balance;
 
-            ViewBag.HouseholdId = new SelectList(db.Household, "Id", "Name", account.HouseholdId);
-            return View(account);
+
+
+            
+                db.Account.Add(newAccount);
+                db.SaveChanges();
+                return RedirectToAction("Index","Budgets");
+           
+            //ViewBag.AccountType = new SelectList(db.AccountType, "Id", "Name");
+            //ViewBag.InstitutionName = new SelectList(db.Institution, "Id", "Name");
+            //return View();
         }
 
         // GET: BankAccounts/Edit/5

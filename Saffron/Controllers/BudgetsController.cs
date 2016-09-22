@@ -46,7 +46,8 @@ namespace Saffron.Models
             foreach (var item in items)
             {
                 BudgetViewItem itemList = new BudgetViewItem();
-                itemList.CategoryName = javaScriptSerializer.Serialize(item.Category.Name);
+                itemList.BudgetItemId = item.Id;
+                itemList.CategoryName = item.Category.Name;  
                 itemList.CategoryId = item.CategoryId;
                 itemList.BudgetTotal = item.Amount;
                 itemList.TotalValue = javaScriptSerializer.Serialize(item.Amount);
@@ -65,6 +66,7 @@ namespace Saffron.Models
             foreach ( var item in items)
             {
                 float sum = 0;
+                int count = 0;
 
                 foreach (var  iTransaction in transactions)
                 {
@@ -75,17 +77,20 @@ namespace Saffron.Models
                         if(iTransaction.TypeTransactionId == 1 || iTransaction.TypeTransactionId == 4)
                         {
                             sum -= iTransaction.Amount;  //  Deposits are negative spending
+                            count++;
                         }
 
                         if(iTransaction.TypeTransactionId == 2 || iTransaction.TypeTransactionId == 3)
                         {
                             sum += iTransaction.Amount;  //  Withdrawls are positive spending
+                            count++;
                         }
                     }
                 }
 
-                sum /= item.BudgetTotal;
+                sum = (sum / item.BudgetTotal) *100;
                 item.SumValue = javaScriptSerializer.Serialize(sum);
+                item.TransactionCount = count;
             }
 
             return items;

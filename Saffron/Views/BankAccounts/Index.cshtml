@@ -1,0 +1,20 @@
+﻿@using Saffron.Models
+@model AccountViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Account Overview</h2>
+
+@foreach(var type in Model.Types)
+{
+    <h3>@type.Name</h3>
+
+    foreach(var account in Model.Accounts)
+    {
+        if(account.AccountTypeId == type.ID)
+        {
+            <h4>@Html.ActionLink(@account.Institution.Name + "  " + account.Balance, "Details", new { id = @account.Id } )   </h4>
+        }
+    }
+}

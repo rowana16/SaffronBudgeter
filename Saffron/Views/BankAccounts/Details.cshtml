@@ -1,0 +1,56 @@
+﻿@using Saffron.Models
+@model AccountDetailViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+
+
+<div class="container">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        
+                        <h2>@Model.Account.Institution.Name  -  @Model.Account.AccountType.Name  </h2>
+                        <h3>Current Balance: $@Model.Account.Balance</h3>
+                        <div class="ibox-tools">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li>
+                                    <a href="@Url.Action("Edit")">Edit</a>
+                                </li>
+
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row panel panel-heading panel-primary">
+                            <h2 class="col-md-4" style="padding:5px 45px">Category </h2>
+                            <h2 class="col-md-4" style="padding:5px 45px">Details </h2>
+                            <h2 class="col-md-4" style="padding:5px 45px">Transaction Date</h2>
+                        </div>
+                        
+                        @foreach (var transaction in Model.Transactions)
+                        {
+                            <div class="row panel panel-default" style="padding-left:30px" href="@Url.Action("Edit","Transactions",new { id = @transaction.Id })">
+                                <h3 class="col-md-4">@transaction.Category.Name </h3>                              
+                                <h3 class="col-md-4">@transaction.Type.Name - $@transaction.Amount </h3>                                
+                                <h3 class="col-md-4">@transaction.Date</h3>  
+                            </div>
+
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
