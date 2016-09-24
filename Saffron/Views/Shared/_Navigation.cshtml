@@ -51,7 +51,7 @@
                     <a href ="@Url.Action("Create", "BankAccounts")"><i class="fa fa-plus btn btn-warning" >   Create New Account</i></a>
                 </li>
 
-                <li class="@Html.IsSelected(action: "Index")">
+                <li class="active">
                     <a href="@Url.Action("Index", "Home")"><i class="fa fa-dollar"></i> <span class="nav-label">Savings Accounts</span> </a>
                     <ul>
                         @foreach (var account in ViewBag.Accounts)
@@ -67,7 +67,7 @@
                     </ul>
 
                 </li>
-                <li class="@Html.IsSelected(action: "Index")">
+                <li class="active">
                     <a href="@Url.Action("Index", "Home")"><i class="fa fa-check-circle"></i> <span class="nav-label">Checking Accounts</span> </a>
                     <ul>
                         @foreach (var account in ViewBag.Accounts)
@@ -83,7 +83,7 @@
                     </ul>
 
                 </li>
-                <li class="@Html.IsSelected(action: "Index")">
+                <li class="active">
                     <a href="@Url.Action("Index", "Home")"><i class="fa fa-credit-card"></i> <span class="nav-label">Credit Cards</span> </a>
                     <ul>
                         @foreach (var account in ViewBag.Accounts)
@@ -100,7 +100,7 @@
 
                 </li>
                 <li></li>
-                <li class="@Html.IsSelected(action: "Index")">
+                <li class="active">
                     <a href="@Url.Action("Index", "Home")"><i class="fa fa-institution"></i> <span class="nav-label">Money Market</span> </a>
                     <ul>
                         @foreach (var account in ViewBag.Accounts)
@@ -116,7 +116,7 @@
                     </ul>
 
                 </li>
-                <li class="@Html.IsSelected(action: "Index")">
+                <li class="active">
                     <a href="@Url.Action("Index", "Home")"><i class="fa fa-certificate"></i> <span class="nav-label">Cert. Deposit</span> </a>
                     <ul>
                         @foreach (var account in ViewBag.Accounts)
@@ -132,7 +132,7 @@
                     </ul>
 
                 </li>
-                <li class="@Html.IsSelected(action: "Index")">
+                <li class="active">
                     <a href="@Url.Action("Index", "Home")"><i class="fa fa-line-chart"></i> <span class="nav-label">Investment</span> </a>
                     <ul>
                         @foreach (var account in ViewBag.Accounts)
@@ -148,7 +148,7 @@
                     </ul>
 
                 </li>
-                <li class="@Html.IsSelected(action: "Index")">
+                <li class="active">
                     <a href="@Url.Action("Index", "Home")"><i class="fa fa-pie-chart"></i> <span class="nav-label">Insurance</span> </a>
                     <ul>
                         @foreach (var account in ViewBag.Accounts)

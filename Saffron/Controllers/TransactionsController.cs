@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Saffron.Models;
 using Microsoft.AspNet.Identity;
+using Saffron.Helpers;
 
 namespace Saffron.Controllers
 {
@@ -23,11 +24,12 @@ namespace Saffron.Controllers
         // GET: Transactions
         public ActionResult Index()
         {
+            ControllerHelpers helper = new ControllerHelpers();
             TransactionViewModel viewModel = new TransactionViewModel();
             ApplicationUser currUser = db.Users.Find(User.Identity.GetUserId());
             if (currUser == null) { return RedirectToAction("Login", "Account"); }
-            List<Transaction> currTransactions = GetTransactions(currUser);
-            List<AccountKey> AccountDisplay = GetAccountDisplay(currUser);           
+            List<Transaction> currTransactions = helper.GetTransactions(currUser);
+            List<AccountKey> AccountDisplay = helper.GetAccountDisplay(currUser);           
 
 
             viewModel.currTransactions = currTransactions;
@@ -38,45 +40,7 @@ namespace Saffron.Controllers
 
         }
 
-        // =========================  HelperFunctions ===========================================
-
-        public List<AccountKey> GetAccountDisplay (ApplicationUser currUser)
-        {
-            //List<AccountKey> AccountDisplay = currUser.Household.Accounts.ToList();
-            List<AccountKey> AccountDisplay = new List<AccountKey>();
-            foreach (var account in currUser.Household.Accounts)
-            {
-                AccountKey currKey = new AccountKey();
-                currKey.Id = account.Id;
-                currKey.InstitutionName = account.Institution.Name + " " + account.AccountType.Name;
-                AccountDisplay.Add(currKey);
-            }
-
-            return AccountDisplay;
-
-        }
-
-        public List<Transaction> GetTransactions(ApplicationUser currUser)
-        {
-            List<Transaction> allTransactions = db.Transaction.Where(i => i.Account.HouseholdId == currUser.HouseholdId).ToList();
-            //List<Transaction> currTransactions = new List<Transaction>();
-            //foreach (var currTransaction in allTransactions)
-            //{
-
-            //    if (currTransaction.Account.HouseholdId == currUser.HouseholdId)
-            //    {
-            //        Transaction currKey = new Transaction();
-            //        currKey.InstitutionName = currTransaction.Account.Institution.Name + " " + currTransaction.Account.AccountType.Name;
-            //        currKey.Category.Name = currTransaction.Category.Name;
-            //        currKey.Type.Name = currTransaction.Type.Name;
-            //        currKey.Date = currTransaction.Date;
-            //        currKey.Amount = currTransaction.Amount;
-
-            //        currTransactions.Add(currKey);
-            //    }
-            //}
-            return allTransactions;
-        }
+        
 
         // GET: Transactions/Details/5
         public ActionResult Details(int? id)
@@ -157,6 +121,7 @@ namespace Saffron.Controllers
         // GET: Transactions/Edit/5
         public ActionResult Edit(int? id)
         {
+            ControllerHelpers helper = new ControllerHelpers();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -172,7 +137,7 @@ namespace Saffron.Controllers
             ApplicationUser currUser = db.Users.Find(User.Identity.GetUserId());
             if (currUser == null) { return RedirectToAction("Login", "Account"); }
            
-            List<AccountKey> AccountDisplay = GetAccountDisplay(currUser);
+            List<AccountKey> AccountDisplay = helper.GetAccountDisplay(currUser);
 
 
             viewModel.editTransaction = transaction;

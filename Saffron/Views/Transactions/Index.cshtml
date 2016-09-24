@@ -60,7 +60,7 @@
                                         <td>@Html.DropDownList("AccountId", null, htmlAttributes: new { @class = "form-control" }) </td>
                                         <td>@Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "form-control" })</td>
                                         <td>@Html.DropDownList("TypeTransactionId", null, htmlAttributes: new { @class = "form-control" })</td>
-                                        <td>@Html.Editor("Date", new { htmlAttributes = new { @class = "form-control pickdate" } })</td>
+                                        <td class="datePicker">@Html.Editor("Date", new { htmlAttributes = new { @class = "form-control pickdate" } })</td>
                                         <td>@Html.Editor("Amount", new { htmlAttributes = new { @class = "form-control " } })</td>
                                         @*<td>@Html.CheckBox("Reconciled", false)</td>*@
                                     </tr>
@@ -152,9 +152,14 @@
     </div>
 </div>
                     @section scripts {
+
                         <script>
                             $(document).ready(function () {
                                 $('#myTable').DataTable();
+                                $('.datePicker').datepicker({
+                                    format: 'mm/dd/yyyy',
+                                    orientation: 'bottom'
+                                });
                             })
 
                         </script>

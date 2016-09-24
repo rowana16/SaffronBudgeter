@@ -21,9 +21,11 @@ namespace Saffron
             // Inspinia script
             bundles.Add(new ScriptBundle("~/bundles/inspinia").Include(
                       "~/Scripts/app/inspinia.js"
-                      ,"~/Scripts/chartist.min.js"
-                      ,"~/Scripts/DataTables/jquery.dataTables.min.js"
-                      ,"~/Scripts/DataTables/dataTables.bootstrap.min.js"));
+                      , "~/Scripts/chartist.min.js"
+                      , "~/Scripts/DataTables/jquery.dataTables.min.js"
+                      , "~/Scripts/DataTables/dataTables.bootstrap.min.js"
+                      , "~/Scripts/bootstrap-datepicker.min.js"
+                      , "~/Scripts/locales/bootstrap-datepicker.en-GB.min.js"));
 
             // SlimScroll
             bundles.Add(new ScriptBundle("~/plugins/slimScroll").Include(
@@ -43,11 +45,17 @@ namespace Saffron
                       "~/Content/style.css"
                       ,"~/Content/chartist.min.css"
                       ,"~/Content/DataTables/jquery.dataTables.min.css"
-                      ,"~/Content/Site.css"));
+                      , "~/Content/bootstrap-datepicker3.min.css"
+                      , "~/Content/bootstrap-datepicker.min.css"
+                      , "~/Content/Site.css"));
 
             // Font Awesome icons
             bundles.Add(new StyleBundle("~/font-awesome/css").Include(
                       "~/fonts/font-awesome/css/font-awesome.min.css", new CssRewriteUrlTransform()));
+
+            // Editable Datatables
+            bundles.Add(new StyleBundle("~/DataTablesEditable").Include(
+                       "~/Content/Datatables/css/buttons.dataTables.min.css"));
         }
     }
 }

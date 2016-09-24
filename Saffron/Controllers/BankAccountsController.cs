@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Saffron.Models;
 using Microsoft.AspNet.Identity;
+using Saffron.Helpers;
 
 namespace Saffron.Controllers
 {
@@ -36,6 +37,7 @@ namespace Saffron.Controllers
         public ActionResult Details(int? id)
         {
             AccountDetailViewModel viewModel = new AccountDetailViewModel();
+            ControllerHelpers helper = new ControllerHelpers();
 
             if (id == null)
             {
@@ -49,6 +51,18 @@ namespace Saffron.Controllers
             {
                 return HttpNotFound();
             }
+
+            ApplicationUser currUser = db.Users.Find(User.Identity.GetUserId());
+            if (currUser == null) { return RedirectToAction("Login", "Account"); }
+            List<Transaction> currTransactions = helper.GetTransactions(currUser);
+            List<AccountKey> AccountDisplay = helper.GetAccountDisplay(currUser);
+
+
+            viewModel.currTransactions = currTransactions;
+            viewModel.AccountId = new SelectList(AccountDisplay, "Id", "InstitutionName");
+            viewModel.CategoryId = new SelectList(db.Category, "Id", "Name");
+            viewModel.TypeTransactionId = new SelectList(db.TypeTransaction, "Id", "Name");
+
             return View(viewModel);
         }
 
@@ -79,10 +93,10 @@ namespace Saffron.Controllers
 
 
             
-                db.Account.Add(newAccount);
-                db.SaveChanges();
-                return RedirectToAction("Index","Budgets");
-           
+            db.Account.Add(newAccount);
+            db.SaveChanges();
+            return RedirectToAction("Details", new { id = newAccount.Id });
+
             //ViewBag.AccountType = new SelectList(db.AccountType, "Id", "Name");
             //ViewBag.InstitutionName = new SelectList(db.Institution, "Id", "Name");
             //return View();
@@ -100,7 +114,11 @@ namespace Saffron.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.HouseholdId = new SelectList(db.Household, "Id", "Name", account.HouseholdId);
+
+            ViewBag.HouseholdId = new SelectList(db.Household, "Id", "Name");
+            ViewBag.AccountType = new SelectList(db.AccountType, "Id", "Name");
+            ViewBag.InstitutionName = new SelectList(db.Institution, "Id", "Name");
+            
             return View(account);
         }
 
@@ -115,7 +133,7 @@ namespace Saffron.Controllers
             {
                 db.Entry(account).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details",new { id = account.Id } );
             }
             ViewBag.HouseholdId = new SelectList(db.Household, "Id", "Name", account.HouseholdId);
             return View(account);

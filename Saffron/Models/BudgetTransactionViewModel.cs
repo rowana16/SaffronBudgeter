@@ -6,7 +6,7 @@ using Saffron.Models;
 
 namespace Saffron.Models
 {
-    public class BudgetTransactionViewModel
+    public class BudgetTransactionViewModel 
     {
         public List<Budget> Budgets { get; set; }
         public List<BudgetItem> BudgetItems { get; set; }
@@ -23,7 +23,7 @@ namespace Saffron.Models
         public List<AccountType> Types { get; set; }
     }
 
-    public class AccountDetailViewModel
+    public class AccountDetailViewModel : TransactionViewModel
     {
         public List<Transaction> Transactions { get; set; }
         public Account Account { get; set; }

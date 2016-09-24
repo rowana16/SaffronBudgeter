@@ -55,7 +55,7 @@
                             @Html.AntiForgeryToken()
                             <tbody>
                                 <tr> 
-                                    <td>@Html.DropDownList("AccountId", null, htmlAttributes: new { @class = "form-control", value =  }) </td>
+                                    <td>@Html.DropDownList("AccountId", null, htmlAttributes: new { @class = "form-control"  }) </td>
                                     <td>@Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "form-control" })</td>
                                     <td>@Html.DropDownList("TypeTransactionId", null, htmlAttributes: new { @class = "form-control" })</td>
                                     <td>@Html.Editor("Date", new { htmlAttributes = new { @class = "form-control pickdate" } })</td>

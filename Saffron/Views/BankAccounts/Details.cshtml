@@ -13,7 +13,7 @@
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        
+
                         <h2>@Model.Account.Institution.Name  -  @Model.Account.AccountType.Name  </h2>
                         <h3>Current Balance: $@Model.Account.Balance</h3>
                         <div class="ibox-tools">
@@ -22,7 +22,8 @@
                             </a>
                             <ul class="dropdown-menu dropdown-user">
                                 <li>
-                                    <a href="@Url.Action("Edit")">Edit</a>
+                                    <a href="@Url.Action("Edit",new { id = Model.Account.Id } )">Edit</a>
+                                    <a href="@Url.Action("Delete",new { id = Model.Account.Id })">Delete</a>
                                 </li>
 
                             </ul>
@@ -32,25 +33,97 @@
                         </div>
                     </div>
                     <div class="ibox-content">
-                        <div class="row panel panel-heading panel-primary">
-                            <h2 class="col-md-4" style="padding:5px 45px">Category </h2>
-                            <h2 class="col-md-4" style="padding:5px 45px">Details </h2>
-                            <h2 class="col-md-4" style="padding:5px 45px">Transaction Date</h2>
-                        </div>
-                        
-                        @foreach (var transaction in Model.Transactions)
-                        {
-                            <div class="row panel panel-default" style="padding-left:30px" href="@Url.Action("Edit","Transactions",new { id = @transaction.Id })">
-                                <h3 class="col-md-4">@transaction.Category.Name </h3>                              
-                                <h3 class="col-md-4">@transaction.Type.Name - $@transaction.Amount </h3>                                
-                                <h3 class="col-md-4">@transaction.Date</h3>  
-                            </div>
+                        <table class="table" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Details</th>
+                                    <th>Transaction Dates</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var transaction in Model.Transactions)
+                                {
+                                <tr>
+                                    <td>@transaction.Category.Name</td>
+                                    <td>@transaction.Type.Name : $@transaction.Amount</td>
+                                    <td>@transaction.Date</td>
+                                    <td><i class="fa fa-gear" onclick="editTransactionBtn(@transaction.Id)"></i></td>
+                                </tr>
+                                }
+                            </tbody>
+                        </table>
 
-                        }
+
+                        
 
                     </div>
+
+                    <!-- Modal Start-->
+                    <div class="modal fade" id="editTransactionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" style="width:1100px;">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title" id="myModalLabel">Edit Transaction</h4>
+                                </div>
+                                <div class="modal-body" id="editTransactionModal-Body">
+                                    <div class="row">
+                                        <div id="editForm">
+                                            @using (Html.BeginForm("Edit", "Transactions"))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Account</th>
+                                                            <th>Category</th>
+                                                            <th>Type</th>
+                                                            <th>Date</th>
+                                                            <th>Amount</th>
+                                                            @*<th>Reconciled? </th>*@
+
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>@Html.DropDownList("AccountId", null, htmlAttributes: new { @class = "form-control" }) </td>
+                                                            <td>@Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "form-control" })</td>
+                                                            <td>@Html.DropDownList("TypeTransactionId", null, htmlAttributes: new { @class = "form-control" })</td>
+                                                            <td>@Html.Editor("Date", new { htmlAttributes = new { @class = "form-control pickdate" } })</td>
+                                                            <td>@Html.Editor("Amount", new { htmlAttributes = new { @class = "form-control " } })</td>
+                                                            @*<td>@Html.CheckBox("Reconciled", false)</td>*@
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <input value="Save Transaction" class="btn btn-warning" onclick="submitEditTransactionForm()" />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    Welcome to a New World of Financial Management.
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+                    <!-- /.modal -->
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script src="~/Scripts/Ajax.js"></script>
+@section scripts {
+    <script>
+                            $(document).ready(function () {
+                                $('#myTable').DataTable();
+                            })
+
+    </script>
+}
