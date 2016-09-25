@@ -1,0 +1,154 @@
+﻿@using Saffron.Models
+@model BudgetViewItem
+
+@{
+    ViewBag.Title = "Budgets";
+    List<Transaction> viewTransactions = ViewBag.Transactions;
+    
+}
+
+
+
+@*<button class="btn btn-primary"><i class='fa fa-plus'></li>
+        @Html.ActionLink(" Create New Budget", "Create", null, new { @class = "btn btn-primary" })
+    </button>*@
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Budget Details</h5>  @* Header *@
+                    <br />
+                    <a href="@Url.Action("Create", "Budgets")"><i class="fa fa-plus btn btn-warning">   Create a New Budget</i></a>
+                    <div class="ibox-tools">
+
+                        <ul class="dropdown-menu dropdown-user">
+                            <li>
+                                <a href="#">Config option 1</a>
+                            </li>
+                            <li>
+                                <a href="#">Config option 2</a>
+                            </li>
+                        </ul>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    @*Graph*@
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <span class="titlePanel"> @Model.CategoryName  - Id: @Model.BudgetItemId - Transactions: @Model.TransactionCount </span> @* Header *@
+                            <div class="ibox-tools">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <i class="fa fa-wrench"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-user">
+                                    <li>
+                                        <a href="@Url.Action("Details",new { id = Model.BudgetItemId })"> Details </a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Edit",new { id = Model.BudgetItemId } )">Edit</a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Delete",new { id = Model.BudgetItemId })">Delete</a>
+                                    </li>
+
+                                </ul>
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+
+                            <div class="ct-chart" id="a1"></div>
+
+                        </div>
+                    </div>
+                </div>
+                @*Transactions*@
+                <div class="ibox-content">
+
+                    <div class="ibox float-e-margins">
+                        <div class="ibox-title">
+                            <span class="titlePanel"> @Model.CategoryName  - Id: @Model.BudgetItemId - Transactions: @Model.TransactionCount </span> @* Header *@
+                            <div class="ibox-tools">
+                                <a class="close-link">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <table class="table" id="myTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Account</th>
+                                            <th>Category</th>
+                                            <th>Type</th>
+                                            <th>Date</th>
+                                            <th>Amount</th>
+
+                                            @*<th>Reconciled? </th>*@
+
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in viewTransactions)
+            {
+
+                                            <tr>
+                                                <td>@item.Account.Institution.Name - @item.Account.AccountType.Name </td>
+                                                <td>@item.Category.Name</td>
+                                                <td>@item.Type.Name</td>
+                                                <td>@Html.DisplayFor(modelItem => item.Date )</td>
+                                                <td>$@Html.DisplayFor(modelItem => item.Amount)</td>
+                                                @*<td>@Html.DisplayFor(modelItem => item.Reconciled)</td>*@
+
+                                                @*<td>
+                                                    <i class="fa fa-wrench" onclick="editTransactionBtn(@item.Id)"></i>
+                                                </td>*@
+                                                <td>
+                                                    <a href="@Url.Action("Delete", "Transactions",new { id = @item.Id })"><i class="fa fa-times"></i></a>
+                                                </td>
+                                            </tr>
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+
+        $(document).ready(function () {
+            @{
+            string divId = "a1";
+            string data = "{  series: [ [" + Model.SumValue + "], [" + Model.TotalValue + "] ]}";
+            string options = "{ high: 100, low: 0,  seriesBarDistance: 10, reverseData: true, horizontalBars: true, axisY: { offset: 0 } }";
+            string Chartstring = "new Chartist.Bar('#" + @divId + "'," + @data + " , " + @options + ")";
+            <text>
+            @Html.Raw(Chartstring);
+
+            </text>
+            }
+            $('#myTable').DataTable();
+        })
+
+    </script>
+
+}

@@ -13,9 +13,6 @@
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-
-                        <h2>@Model.Account.Institution.Name  -  @Model.Account.AccountType.Name  </h2>
-                        <h3>Current Balance: $@Model.Account.Balance</h3>
                         <div class="ibox-tools">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                 <i class="fa fa-wrench"></i>
@@ -31,6 +28,8 @@
                                 <i class="fa fa-times"></i>
                             </a>
                         </div>
+                        <h2>@Model.Account.Institution.Name  -  @Model.Account.AccountType.Name  </h2>
+                        <h3>Current Balance: $@Model.Account.Balance</h3>
                     </div>
                     <div class="ibox-content">
                         <table class="table" id="myTable">
@@ -45,18 +44,18 @@
                             <tbody>
                                 @foreach (var transaction in Model.Transactions)
                                 {
-                                <tr>
-                                    <td>@transaction.Category.Name</td>
-                                    <td>@transaction.Type.Name : $@transaction.Amount</td>
-                                    <td>@transaction.Date</td>
-                                    <td><i class="fa fa-gear" onclick="editTransactionBtn(@transaction.Id)"></i></td>
-                                </tr>
+                                    <tr>
+                                        <td>@transaction.Category.Name</td>
+                                        <td>@transaction.Type.Name : $@transaction.Amount</td>
+                                        <td>@transaction.Date</td>
+                                        <td><i class="fa fa-gear" onclick="editTransactionBtn(@transaction.Id)"></i></td>
+                                    </tr>
                                 }
                             </tbody>
                         </table>
 
 
-                        
+
 
                     </div>
 
@@ -66,46 +65,12 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                    <h4 class="modal-title" id="myModalLabel">Edit Transaction</h4>
+                                    <h4 class="modal-title" id="myModalLabel">Edit Transaction </h4>
                                 </div>
                                 <div class="modal-body" id="editTransactionModal-Body">
-                                    <div class="row">
-                                        <div id="editForm">
-                                            @using (Html.BeginForm("Edit", "Transactions"))
-                                            {
-                                                @Html.AntiForgeryToken()
-                                                <table class="table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Account</th>
-                                                            <th>Category</th>
-                                                            <th>Type</th>
-                                                            <th>Date</th>
-                                                            <th>Amount</th>
-                                                            @*<th>Reconciled? </th>*@
 
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
-
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>@Html.DropDownList("AccountId", null, htmlAttributes: new { @class = "form-control" }) </td>
-                                                            <td>@Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "form-control" })</td>
-                                                            <td>@Html.DropDownList("TypeTransactionId", null, htmlAttributes: new { @class = "form-control" })</td>
-                                                            <td>@Html.Editor("Date", new { htmlAttributes = new { @class = "form-control pickdate" } })</td>
-                                                            <td>@Html.Editor("Amount", new { htmlAttributes = new { @class = "form-control " } })</td>
-                                                            @*<td>@Html.CheckBox("Reconciled", false)</td>*@
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                                <input value="Save Transaction" class="btn btn-warning" onclick="submitEditTransactionForm()" />
-                                            }
-                                        </div>
-                                    </div>
                                 </div>
                                 <div class="modal-footer">
-                                    Welcome to a New World of Financial Management.
                                 </div>
                             </div>
                             <!-- /.modal-content -->
@@ -118,12 +83,21 @@
         </div>
     </div>
 </div>
-<script src="~/Scripts/Ajax.js"></script>
+
 @section scripts {
+    <script src="~/Scripts/Ajax.js"></script>
     <script>
-                            $(document).ready(function () {
-                                $('#myTable').DataTable();
-                            })
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+            $('.datePicker').datepicker({
+                format: 'mm/dd/yyyy',
+                orientation: 'bottom'
+            });
+            $('.pickdate').datepicker({
+                format: 'mm/dd/yyyy',
+                orientation: 'bottom'
+            });
+        })
 
     </script>
 }

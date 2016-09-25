@@ -120,6 +120,7 @@
                                     @*<th>Reconciled? </th>*@
 
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -135,9 +136,10 @@
                                         @*<td>@Html.DisplayFor(modelItem => item.Reconciled)</td>*@
 
                                         <td>
-                                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                                            @*@Html.ActionLink("Details", "Details", new { id=item.Id }) |*@
-                                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                            <i class="fa fa-wrench" onclick="editTransactionBtn(@item.Id)"></i>
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("Delete", "Transactions",new { id = @item.Id })"><i class="fa fa-times"></i></a>
                                         </td>
                                     </tr>
 
@@ -145,23 +147,44 @@
                             </tbody>
                         </table>
 
+                        <!-- Modal Start-->
+                        <div class="modal fade" id="editTransactionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" style="width:1100px;">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title" id="myModalLabel">Edit Transaction</h4>
+                                    </div>
+                                    <div class="modal-body" id="editTransactionModal-Body">
+                                        
+                                    </div>
+                                    <div class="modal-footer">
+                                       
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                        <!-- /.modal -->
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-                    @section scripts {
+ @section scripts {
+    <script src="~/Scripts/Ajax.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+            $('.datePicker').datepicker({
+                format: 'mm/dd/yyyy',
+                orientation: 'bottom'
+            });
+        })
 
-                        <script>
-                            $(document).ready(function () {
-                                $('#myTable').DataTable();
-                                $('.datePicker').datepicker({
-                                    format: 'mm/dd/yyyy',
-                                    orientation: 'bottom'
-                                });
-                            })
-
-                        </script>
-                    }
+    </script>
+ }
 

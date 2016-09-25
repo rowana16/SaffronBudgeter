@@ -8,6 +8,10 @@ namespace Saffron.Models
 {
     public class TransactionViewModel
     {
+        public TransactionViewModel()
+        {
+        }
+
         //public List<InstitutionKey> AccountDisplay { get; set; };
         public SelectList AccountId { get; set; }
         public SelectList CategoryId { get; set; }

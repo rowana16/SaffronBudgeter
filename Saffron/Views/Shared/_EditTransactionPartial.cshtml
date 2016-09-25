@@ -1,29 +1,49 @@
 ﻿@using Saffron.Models
-@model TransactionViewModel
+@model Transaction
 
-<table class="table" >
-    <thead>
-        <tr>
-            <th>Account</th>
-            <th>Category</th>
-            <th>Type</th>
-            <th>Date</th>
-            <th>Amount</th>
-            @*<th>Reconciled? </th>*@
+    <div >
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "editForm", action = "javascript:submitEditTransactionForm()" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Id);
 
-            <th></th>
-        </tr>
-    </thead>
-    @Html.AntiForgeryToken()
-    <tbody>
-        <tr>
-            <td>@Html.DropDownList("AccountId", null, @Model.editTransaction.Account.Institution.Name + " " + @Model.editTransaction.Account.AccountType.Name, htmlAttributes: new { @class = "form-control" }) </td>
-            <td>@Html.DropDownList("CategoryId", null, @Model.editTransaction.Category.Name, htmlAttributes: new { @class = "form-control" })</td>
-            <td>@Html.DropDownList("TypeTransactionId", null, @Model.editTransaction.Type.Name,  htmlAttributes: new { @class = "form-control" })</td>
-            <td>@Html.Editor("Date", new { htmlAttributes = new { @class = "form-control pickdate" } })</td>
-            <td>@Html.Editor("Amount", new { htmlAttributes = new { @class = "form-control " } })</td>
-            @*<td>@Html.CheckBox("Reconciled", false)</td>*@
-        </tr>
-    </tbody>
-</table>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Account</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        @*<th>Reconciled? </th>*@
 
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@Html.DropDownList("AccountId", null, htmlAttributes: new { @class = "form-control" }) </td>
+                        <td>@Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "form-control" })</td>
+                        <td>@Html.DropDownList("TypeTransactionId", null,  htmlAttributes: new { @class = "form-control" })</td>
+                        <td>@Html.Editor("Date", new { htmlAttributes = new { @class = "form-control datePicker" } })</td>
+                        @*<td>@Html.Editor("Amount", new { htmlAttributes = new { @class = "form-control " } }, new { Amount = Model.Amount } )</td>*@
+                        <td>@Html.EditorFor(m=>m.Amount)</td>
+                        @*<td>@Html.CheckBox("Reconciled", false)</td>*@
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button type="submit" class="btn btn-warning"> Save Edited Transaction </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+    </div>
+<script>
+    $(function () {
+        $(".datePicker").datepicker({ dateformat: "mm/dd/yy" });
+    });
+</script>

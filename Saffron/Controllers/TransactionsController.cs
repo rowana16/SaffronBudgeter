@@ -155,19 +155,20 @@ namespace Saffron.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,AccountId,Description,Date,Amount,TypeTransactionId,CategoryId,EnteredById,Reconciled,ReconciledAmount,EnteredBy_Id")] Transaction transaction)
+        public ActionResult Edit([Bind(Include = "Id, AccountId, CategoryId, TypeTransactionId, Date, Amount")] Transaction transaction)
         {
+            
             if (ModelState.IsValid)
             {
-                Transaction originalTransaction = db.Transaction.Find(transaction.Id);
-                bool overdraft = BalanceChangeCheck(transaction, originalTransaction);
-                db.Entry(originalTransaction).CurrentValues.SetValues(transaction);
-                db.SaveChanges();
+                //Transaction originalTransaction = db.Transaction.Find(transaction.editTransaction.Id);
+                //bool overdraft = BalanceChangeCheck(transaction.editTransaction, originalTransaction);
+                //db.Entry(originalTransaction).CurrentValues.SetValues(transaction);
+                //db.SaveChanges();
 
-                if (overdraft)
-                {
-                    RedirectToAction("OverdraftWarning");
-                }
+                //if (overdraft)
+                //{
+                //    RedirectToAction("OverdraftWarning");
+                //}
                 return RedirectToAction("Index");
             }
             ViewBag.AccountId = new SelectList(db.Account, "Id", "Name", transaction.AccountId);

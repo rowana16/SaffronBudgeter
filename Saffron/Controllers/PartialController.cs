@@ -50,10 +50,15 @@ namespace Saffron.Controllers
 
 
             viewModel.editTransaction = transaction;
-            viewModel.AccountId = new SelectList(AccountDisplay, "Id", "InstitutionName");
-            viewModel.CategoryId = new SelectList(db.Category, "Id", "Name");
-            viewModel.TypeTransactionId = new SelectList(db.TypeTransaction, "Id", "Name");
-            return PartialView("_EditTransactionPartial",viewModel);
+            //viewModel.AccountId = new SelectList(AccountDisplay, "Id", "InstitutionName");
+            //viewModel.CategoryId = new SelectList(db.Category, "Id", "Name");
+            //viewModel.TypeTransactionId = new SelectList(db.TypeTransaction, "Id", "Name");
+            var model = new Transaction();
+            model = transaction;
+            ViewBag.AccountId = new SelectList(AccountDisplay, "Id", "InstitutionName", transaction.AccountId);
+            ViewBag.CategoryId = new SelectList(db.Category, "Id", "Name", transaction.CategoryId);
+            ViewBag.TypeTransactionId = new SelectList(db.TypeTransaction, "Id", "Name", transaction.TypeTransactionId);
+            return PartialView("_EditTransactionPartial",model);
         }
     }
 }

@@ -18,14 +18,11 @@
         <div class="col-lg-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>Budget Items</h5>
+                    <h5>Budget Items</h5>  @* Header *@
+                    <br />
+                    <a href="@Url.Action("Create", "Budgets")"><i class="fa fa-plus btn btn-warning">   Create a New Budget</i></a>
                     <div class="ibox-tools">
-                        @*<a class="collapse-link">
-                                <i class="fa fa-chevron-up"></i>
-                            </a>*@
-                        @*<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                <i class="fa fa-wrench"></i>
-                            </a>*@
+                        
                         <ul class="dropdown-menu dropdown-user">
                             <li>
                                 <a href="#">Config option 1</a>
@@ -34,7 +31,7 @@
                                 <a href="#">Config option 2</a>
                             </li>
                         </ul>
-                        <a class="close-link">
+                        <a class="close-link" >
                             <i class="fa fa-times"></i>
                         </a>
                     </div>
@@ -43,13 +40,38 @@
 
                     @foreach (var Graphitem in Model.GraphData)
                     {
-
-                        <h4> @Graphitem.CategoryName  - Id: @Graphitem.BudgetItemId - Transactions: @Graphitem.TransactionCount</h4>
                         string graph = "a" + @i;
-                        <div class="ct-chart" id="@graph"></div>
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <span class="titlePanel"> @Graphitem.CategoryName  - Id: @Graphitem.BudgetItemId - Transactions: @Graphitem.TransactionCount</span> @* Header *@
+                                <div class="ibox-tools">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                        <i class="fa fa-wrench"></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-user">
+                                        <li>
+                                            <a href="@Url.Action("Details",new { id = Graphitem.BudgetItemId })"> Details </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Edit",new { id = Graphitem.BudgetItemId } )">Edit</a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Delete",new { id = Graphitem.BudgetItemId })">Delete</a>
+                                        </li>
+
+                                    </ul>
+                                    <a class="close-link">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+                                 
+                                <div class="ct-chart" id="@graph"></div>
+                               
+                            </div>
+                        </div>
                         i++;
-
-
                     }
 
                 </div>

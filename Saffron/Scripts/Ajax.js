@@ -28,7 +28,8 @@ function editTransactionBtn(id) {
             $("#editTransactionModal-Body").append('<div class="" id="ajax-Accounts-loader1" style="text-align: center;"><div class="" style="display: inline-block;"><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div></div>');
             $("#editTransactionModal").modal('show');
             console.log("ModalUp");
-            },
+        },
+
         type: "GET",
         url: "/Partial/Edit",
         data: { id: id },
@@ -47,6 +48,10 @@ function editTransactionBtn(id) {
 function submitEditTransactionForm() {
     var form = $("#editForm");
     var token = $('input[name="__RequestVerificationToken"]', form).val();
+    //var url = ;
+    //var data = ;
+
+    //console.log(data)
 
     $.ajax({
         type: "POST",

@@ -33,3 +33,8 @@ line.ct-bar {
 .ct-series-b line.ct-bar{
     stroke: green;
 }
+
+div.ibox-tools{
+    width:25px;
+    float: right;
+}
