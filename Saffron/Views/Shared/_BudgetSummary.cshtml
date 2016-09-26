@@ -1,0 +1,97 @@
+﻿@using Saffron.Models
+@model  BudgetTransactionViewModel
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Budget Items</h5>  @* Header *@
+                    <br />
+                    <a href="@Url.Action("Create", "Budgets")"><i class="fa fa-plus btn btn-warning">   Create a New Budget</i></a>
+                    <div class="ibox-tools">
+
+                        <ul class="dropdown-menu dropdown-user">
+                            <li>
+                                <a href="#">Config option 1</a>
+                            </li>
+                            <li>
+                                <a href="#">Config option 2</a>
+                            </li>
+                        </ul>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+
+                    @{ 
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <span class="titlePanel">  @* Header *@ </span>
+                                <div class="ibox-tools">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                        <i class="fa fa-wrench"></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-user">
+                                        <li>
+                                            <a href="@Url.Action("Details")"> Details </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Edit" )">Edit</a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Delete")">Delete</a>
+                                        </li>
+
+                                    </ul>
+                                    <a class="close-link">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+
+                                <div class="ct-chart" id="a1"></div>
+
+                            </div>
+                        </div>
+                        
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+
+    $(document).ready(function () {
+        @foreach (var GraphItem in Model.GraphData)
+        {
+            string divId = "a1";
+
+            //string data = "{ labels: ['Spent', 'Budgeted'], series: [ [" + GraphItem.SumValue + "], ["+ GraphItem.TotalValue + "] ]}";
+            //string options = "{ high: 100, low: 0, seriesBarDistance: 30, horizontalBars: true, axisY: { offset: 50 } }";
+            string data = "{  series: [ [" + GraphItem.SumValue + "], [" + GraphItem.TotalValue + "] ]}";
+            string options = "{ high: 100, low: 0,  seriesBarDistance: 10, reverseData: true, horizontalBars: true, axisY: { offset: 0 } }";
+            string Chartstring = "new Chartist.Bar('#" + @divId + "'," + @data + " , " + @options + ")";
+<text>
+                    @Html.Raw(Chartstring);
+
+
+</text>
+           
+
+        }
+
+    })
+
+    </script>
+
+}

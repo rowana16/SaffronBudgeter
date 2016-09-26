@@ -1,0 +1,13 @@
+﻿@using Saffron.Models
+@model BudgetItem
+@{
+    ViewBag.Title = "Overview";
+    
+}
+
+<h2>Overview</h2>
+
+@*Budget Summary*@
+@Html.Action("BudgetSummary","Partial")
+@* Recent Transactions*@
+@Html.Action("RecentTransactions", "Partial")

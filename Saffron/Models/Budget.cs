@@ -17,6 +17,11 @@ namespace Saffron.Models
 
 
         //one to many and many to many relationships
+        //public Budget()
+        //{
+        //    this.BudgetItems = new HashSet<BudgetItem>();
+        //}
 
+        //public virtual ICollection<BudgetItem> BudgetItems { get; set; }
     }
 }

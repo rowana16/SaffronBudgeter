@@ -27,6 +27,30 @@ namespace Saffron.Controllers
 
         }
     
+        public ActionResult BudgetSummary()
+        {
+            ApplicationUser currUser = db.Users.Find(User.Identity.GetUserId());
+            BudgetTransactionViewModel viewModel = new BudgetTransactionViewModel();
+            
+           //foreach(Budget budget in currUser.Household.Budgets)
+           // {
+           //     foreach(BudgetItem budgetItem in budget.BudgetItems)
+           //     {
+           //         viewModel.BudgetItems.Add(budgetItem);
+           //     }
+                
+           // }
+            return PartialView("_BudgetSummary");
+        }
+
+        public ActionResult RecentTransactions()
+        {
+            ApplicationUser currUser = db.Users.Find(User.Identity.GetUserId());
+            DateTime dateWindow = DateTime.Today.AddDays(-30);
+            List<Transaction> transactions = db.Transaction.Where(t => t.Account.HouseholdId == (int)currUser.HouseholdId && t.Date > dateWindow).ToList();
+
+            return PartialView("_RecentTransactions", transactions);
+        }
 
         public ActionResult Edit(int? id)
         {

@@ -77,7 +77,7 @@ namespace Saffron.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,AccountId,Description,Date,Amount,TypeTransactionId,CategoryId,EnteredById,Reconciled,ReconciledAmount,EnteredBy_Id")] Transaction transaction)
         {
-            Account currAccount = db.Account.Find(transaction.AccountId);
+            //Account currAccount = db.Account.Find(transaction.AccountId);
             //if (transaction.TypeTransactionId == 2 || transaction.TypeTransactionId == 3) //Withdrawl or Transfer Action
             //{
             //    if(transaction.Amount > currAccount.Balance)
@@ -87,6 +87,7 @@ namespace Saffron.Controllers
             //        return RedirectToAction("OverdraftWarning");
             //    }
             //}
+
 
             if (ModelState.IsValid)
             {
@@ -160,15 +161,16 @@ namespace Saffron.Controllers
             
             if (ModelState.IsValid)
             {
-                //Transaction originalTransaction = db.Transaction.Find(transaction.editTransaction.Id);
-                //bool overdraft = BalanceChangeCheck(transaction.editTransaction, originalTransaction);
-                //db.Entry(originalTransaction).CurrentValues.SetValues(transaction);
-                //db.SaveChanges();
+                Transaction originalTransaction = db.Transaction.Find(transaction.Id);
+                bool overdraft = BackOutTransaction(originalTransaction);
+                overdraft = UpdateBalances(transaction);
+                db.Entry(originalTransaction).CurrentValues.SetValues(transaction);
+                db.SaveChanges();
 
-                //if (overdraft)
-                //{
-                //    RedirectToAction("OverdraftWarning");
-                //}
+                if (overdraft)
+                {
+                    RedirectToAction("OverdraftWarning");
+                }
                 return RedirectToAction("Index");
             }
             ViewBag.AccountId = new SelectList(db.Account, "Id", "Name", transaction.AccountId);
@@ -179,7 +181,7 @@ namespace Saffron.Controllers
 
         
 
-        //============================================ Delete: Edit ========================================================================
+        //============================================ Get: Delete ========================================================================
 
         // GET: Transactions/Delete/5
         public ActionResult Delete(int? id)
@@ -196,7 +198,7 @@ namespace Saffron.Controllers
             return View(transaction);
         }
 
-        //============================================ Post: Edit ========================================================================
+        //============================================ Post: Delete ========================================================================
 
         // POST: Transactions/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -269,55 +271,7 @@ namespace Saffron.Controllers
             return overdraft;
         }
 
-        //============================================ Edit Amount ========================================================================
-
-        public bool ChangeTransactionAmount (Transaction deltaTransaction, float newAmount)
-        {
-            BackOutTransaction(deltaTransaction);
-            deltaTransaction.Amount = newAmount;
-            bool overdraft = UpdateBalances(deltaTransaction);
-            return overdraft;
-
-        }
-
-        //============================================ Edit Type ========================================================================
-
-        public bool ChangeTransactionType (Transaction deltaTransaction, int newType)
-        {
-            //Transaction backOutTransaction = new Transaction();
-            //backOutTransaction.AccountId = deltaTransaction.AccountId;
-            //backOutTransaction.Amount = deltaTransaction.Amount;
-            //backOutTransaction.Reconciled = deltaTransaction.Reconciled;
-            //backOutTransaction.TypeTransactionId = deltaTransaction.TypeTransactionId;
-            
-            BackOutTransaction(deltaTransaction);
-
-            deltaTransaction.TypeTransactionId = newType;
-            bool overdraft = UpdateBalances(deltaTransaction);
-            return overdraft;
-        }
-
-        //============================================ Sorting by Change Type ========================================================================
-
-        public bool BalanceChangeCheck(Transaction transaction, Transaction originalTransaction)
-        {
-            if (transaction.Amount != originalTransaction.Amount)
-            {
-                bool overdraft = ChangeTransactionAmount(originalTransaction, transaction.Amount);
-                return overdraft;
-            }
-
-            if (transaction.TypeTransactionId != originalTransaction.TypeTransactionId)
-            {
-                bool overdraft = ChangeTransactionType(originalTransaction, transaction.TypeTransactionId);
-                return overdraft;
-            }
-
-            
-
-            return false;
-
-        }
+        
 
         //============================================ Garbage ========================================================================
 
