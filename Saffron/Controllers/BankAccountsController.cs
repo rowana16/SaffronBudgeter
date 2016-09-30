@@ -89,9 +89,22 @@ namespace Saffron.Controllers
             newAccount.InstitutionId = Institution;
             newAccount.Name = db.Institution.Find(Institution).Name + " " + db.AccountType.Find(AccountType).Name;
             newAccount.Balance = Balance;
+            int repeatCount = 0;
+            int accountId = 0;
 
+            foreach(Account existAccount in currUser.Household.Accounts)
+            {
+                if(existAccount.AccountTypeId == AccountType && existAccount.InstitutionId == Institution)
+                {
+                    repeatCount++;
+                    accountId = existAccount.Id;
+                }
+            }
 
-
+            if(repeatCount > 0)
+            {
+                return RedirectToAction("CreateError", new { id = accountId } );
+            }
             
             db.Account.Add(newAccount);
             db.SaveChanges();
@@ -102,6 +115,11 @@ namespace Saffron.Controllers
             //return View();
         }
 
+        public ActionResult CreateError(int Id)
+        {
+            ViewBag.Id = Id;
+            return View();
+        }
         // GET: BankAccounts/Edit/5
         public ActionResult Edit(int? id)
         {

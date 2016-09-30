@@ -26,21 +26,68 @@ namespace Saffron.Controllers
             return PartialView("_PartialTest");
 
         }
-    
+    //====  Build Chartist BudgetSummary Chart with tooltip ==============================================================================
+
         public ActionResult BudgetSummary()
         {
             ApplicationUser currUser = db.Users.Find(User.Identity.GetUserId());
-            BudgetTransactionViewModel viewModel = new BudgetTransactionViewModel();
+            BudgetSummaryViewModel viewModel = new BudgetSummaryViewModel();
+
+            //Initialize Strings
+            viewModel.Labels = " labels: [";
+            viewModel.Series = " series: [ [";
+            viewModel.SeriesTotal = " [";
+            viewModel.Options = " seriesBarDistance: 10, reverseData: true,  axisY: { offset: 10 }, plugins: [ Chartist.plugins.tooltip() ]";
+
+            //Get Sum of Current Transactions by CategoryId
+            DateTime dateWindow = DateTime.Today.AddDays(-30);
+            List<Transaction> transactions = db.Transaction.Where(t => t.Account.HouseholdId == (int)currUser.HouseholdId && t.Date > dateWindow).ToList();
+            Dictionary<int, float> transactionSum = new Dictionary<int, float>();
+            foreach (Category category in db.Category.ToList())
+            {
+                float categorySum = 0;
+                foreach(Transaction transaction in transactions)
+                {
+                    if(transaction.CategoryId == category.Id)
+                    {
+                        if(transaction.TypeTransactionId == 1 || transaction.TypeTransactionId == 4)
+                        {
+                            categorySum -= transaction.Amount;
+                        }
+                        if(transaction.TypeTransactionId == 2 || transaction.TypeTransactionId == 3)
+                        { 
+                            categorySum += transaction.Amount;
+                        }
+                    }
+                   
+                }
+                transactionSum.Add(category.Id, categorySum);
+            }
             
-           //foreach(Budget budget in currUser.Household.Budgets)
-           // {
-           //     foreach(BudgetItem budgetItem in budget.BudgetItems)
-           //     {
-           //         viewModel.BudgetItems.Add(budgetItem);
-           //     }
-                
-           // }
-            return PartialView("_BudgetSummary");
+            //Build Strings
+
+            foreach (Budget budget in currUser.Household.Budgets)
+            {
+                List<BudgetItem> budgetItems = db.BudgetItem.Where(i => i.BudgetId == budget.Id).ToList();
+
+                foreach (BudgetItem budgetItem in  budgetItems )
+                {
+                    float currSum = transactionSum[budgetItem.CategoryId] / budgetItem.Amount *100;
+                    if (currSum > 100) { currSum = 100; }
+                    viewModel.Labels += "'" + budgetItem.Category.Name + "',";
+                    viewModel.Series += "{meta: '" + budgetItem.Category.Name + "', value: " + currSum + "},";
+                    viewModel.SeriesTotal += "{meta: '" + budgetItem.Category.Name + "', value: " + 100 + "},"; ;
+                }
+
+            }
+
+            //Finish Strings and ViewModel
+            viewModel.Labels = viewModel.Labels.Substring(0, viewModel.Labels.Length - 1) + "]";
+            viewModel.SeriesTotal = viewModel.SeriesTotal.Substring(0, viewModel.SeriesTotal.Length - 1) + "]";
+            viewModel.Series = viewModel.Series.Substring(0, viewModel.Series.Length - 1) + "]";
+            viewModel.dCategorySpending = transactionSum;
+
+            return PartialView("_BudgetSummary",viewModel);
         }
 
         public ActionResult RecentTransactions()

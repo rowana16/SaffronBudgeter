@@ -20,15 +20,26 @@ namespace Saffron.Models
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Budgets
-        public ActionResult Index()
+        public ActionResult Index(DateTime? start, DateTime? end)
         {
+            if (start == null)
+            {
+                start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            }
+
+            if (end == null)
+            {
+                end = new DateTime(DateTime.Now.Year, DateTime.Now.Month + 1, 1);
+            }
+
             ApplicationUser currUser = db.Users.Find(User.Identity.GetUserId());
             if (currUser == null) { return RedirectToAction("Login", "Account"); }
             BudgetTransactionViewModel viewModel = new BudgetTransactionViewModel();
+            DateTime currMonth = DateTime.Today.AddDays(-30);
 
             //viewModel.Budgets = currUser.Household.Budgets.ToList();
             viewModel.BudgetItems = db.BudgetItem.Where(o => o.Budget.HouseholdId == currUser.HouseholdId).OrderBy(o => o.Category.Name).ToList();
-            viewModel.Transactions = db.Transaction.Where(o => o.Account.HouseholdId == currUser.HouseholdId).ToList();
+            viewModel.Transactions = db.Transaction.Where(o => o.Account.HouseholdId == currUser.HouseholdId && o.Date < end && o.Date > start).ToList();
             viewModel.GraphData = Stringify(viewModel.BudgetItems);
             viewModel.GraphData = AddTransactions(viewModel.GraphData, viewModel.Transactions);
            
@@ -109,6 +120,7 @@ namespace Saffron.Models
             sum = (sum / item.BudgetTotal) * 100;
             item.SumValue = javaScriptSerializer.Serialize(sum);
             item.TransactionCount = count;
+            item.TotalValue = javaScriptSerializer.Serialize(100);
             return item;
         }
 
@@ -146,6 +158,14 @@ namespace Saffron.Models
         {
             ApplicationUser currUser = db.Users.Find(User.Identity.GetUserId());
             ViewBag.HouseholdId = currUser.HouseholdId;
+            if(currUser.Household.Budgets.Count() == 0)
+            {
+                Budget newBudget = new Budget();
+                newBudget.HouseholdId = (int)currUser.HouseholdId;
+                newBudget.Name = currUser.LastName;
+                db.Budget.Add(newBudget);
+                db.SaveChanges();
+            }
             ViewBag.BudgetId = currUser.Household.Budgets.First().Id;
             ViewBag.CategoryId = new SelectList(db.Category, "Id", "Name");
             ViewBag.RepeatFrequencyId = new SelectList(db.RepeatFrequency, "Id", "Frequency");
@@ -160,7 +180,27 @@ namespace Saffron.Models
         [ValidateAntiForgeryToken]
         public ActionResult Create(DateTime DayOfMonth, int RepeatFrequencyId, int CategoryId, float Amount, int BudgetId)
         {
+            // check for existing budget for set category
+            ApplicationUser currUser = db.Users.Find(User.Identity.GetUserId());
+            int categorySum = 0;
+            int budgetItemId = 0;
+            foreach (Budget userBudget in currUser.Household.Budgets)
+            {
+                int count = 0;
+                count = db.BudgetItem.Where(i => i.CategoryId == CategoryId && userBudget.Id == i.BudgetId).Count();
+                categorySum += count;
+                if (count > 0)
+                {
+                    budgetItemId = db.BudgetItem.Where(i => i.CategoryId == CategoryId && userBudget.Id == i.BudgetId).FirstOrDefault().Id;
+                }
+            }
+
+            if (categorySum > 0)
+            {
+                return RedirectToAction("CreateError", new { id = budgetItemId });
+            }
             BudgetItem budget = new BudgetItem();
+
             budget.DayOfMonth = DayOfMonth.Day;
             budget.BudgetId = BudgetId;
             budget.RepeatFrequencyId = RepeatFrequencyId;
@@ -174,11 +214,17 @@ namespace Saffron.Models
                 return RedirectToAction("Index");
             }
 
-            ApplicationUser currUser = db.Users.Find(User.Identity.GetUserId());
+           
             ViewBag.HouseholdId = currUser.HouseholdId;
             ViewBag.BudgetId = currUser.Household.Budgets.First().Id;
             ViewBag.CategoryId = new SelectList(db.Category, "Id", "Name");
             ViewBag.RepeatFrequencyId = new SelectList(db.RepeatFrequency, "Id", "Frequency");
+            return View();
+        }
+
+        public ActionResult CreateError(int? id)
+        {
+            ViewBag.Id = id;
             return View();
         }
 
@@ -253,8 +299,8 @@ namespace Saffron.Models
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Budget budget = db.Budget.Find(id);
-            db.Budget.Remove(budget);
+            BudgetItem budgetItem = db.BudgetItem.Find(id);
+            db.BudgetItem.Remove(budgetItem);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

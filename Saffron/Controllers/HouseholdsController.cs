@@ -186,11 +186,11 @@ namespace Saffron.Controllers
                 myMessage.Html = "You have been invited to join " + currUser.DisplayName + "'s household.  Click this link to Register and Join: <a href = \"http://arowan-budgeter.azurewebsites.net/Account/ExternalRegister/ " + Id + "\"> Join the Household </a>";
                 var transportWeb = new Web(ConfigurationManager.AppSettings["SendGridAPIKey"]);
                 transportWeb.DeliverAsync(myMessage);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Overview", "Home");
 
             }
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Overview", "Home");
 
         }
 

@@ -54,6 +54,13 @@ function submitEditTransactionForm() {
     //console.log(data)
 
     $.ajax({
+        beforeSend: function () {
+            //$(dropdownElement.Click());
+            $("#editTransactionModal-Body").empty();
+            $("#editTransactionModal-Body").append('<div class="" id="ajax-Accounts-loader1" style="text-align: center;"><div class="" style="display: inline-block;"><i class="fa fa-spinner fa-spin fa-3x fa-fw"></i></div></div>');
+            $("#editTransactionModal").modal('show');
+            console.log("ModalUp");
+        },
         type: "POST",
         url: "/Transactions/Edit",
         data: form.serialize(),
@@ -64,6 +71,14 @@ function submitEditTransactionForm() {
             console.log("Success! submitEditTransactionform()");
             $("#editTransactionModal-Body").empty();
             $("#editTransactionModal").modal('hide');
+            if (responseEditTransaction.overdraft) {
+                location = 'http://localhost:50561/Transactions/OverdraftWarning' ;
+                
+            }
+            if (!responseEditTransaction.overdraft) {
+                location.reload();
+            }
+           
         }
     })
 };

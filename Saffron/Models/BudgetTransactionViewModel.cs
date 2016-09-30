@@ -17,6 +17,16 @@ namespace Saffron.Models
 
     }
 
+    public class BudgetSummaryViewModel  //Used on Overview
+    {
+        public string Labels { get; set; }
+        public string Series { get; set; }
+        public string SeriesTotal { get; set; }
+        public string Options { get; set; }
+        public Dictionary<int,float> dCategorySpending { get; set; }
+        
+    }
+
     public class AccountViewModel
     {
         public List<Account> Accounts { get; set; }

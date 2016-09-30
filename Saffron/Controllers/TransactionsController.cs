@@ -97,7 +97,7 @@ namespace Saffron.Controllers
                 bool overdraft = UpdateBalances(transaction);
                 if (overdraft)
                 {
-                    RedirectToAction("OverdraftWarning");
+                    return RedirectToAction("OverdraftWarning");
                 }
 
                 return RedirectToAction("Index");
@@ -156,27 +156,28 @@ namespace Saffron.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id, AccountId, CategoryId, TypeTransactionId, Date, Amount")] Transaction transaction)
+        public JsonResult Edit([Bind(Include = "Id, AccountId, CategoryId, TypeTransactionId, Date, Amount")] Transaction transaction)
         {
-            
+            bool overdraft = new bool();
+
             if (ModelState.IsValid)
             {
                 Transaction originalTransaction = db.Transaction.Find(transaction.Id);
-                bool overdraft = BackOutTransaction(originalTransaction);
+                overdraft = BackOutTransaction(originalTransaction);
                 overdraft = UpdateBalances(transaction);
                 db.Entry(originalTransaction).CurrentValues.SetValues(transaction);
                 db.SaveChanges();
 
-                if (overdraft)
-                {
-                    RedirectToAction("OverdraftWarning");
-                }
-                return RedirectToAction("Index");
+                //if (overdraft)
+                //{
+                return Json(new { overdraft = overdraft });
+                //}
+                //return RedirectToAction("Index");
             }
-            ViewBag.AccountId = new SelectList(db.Account, "Id", "Name", transaction.AccountId);
-            ViewBag.CategoryId = new SelectList(db.Category, "Id", "Name", transaction.CategoryId);
-            ViewBag.TypeTransactionId = new SelectList(db.TypeTransaction, "Id", "Name", transaction.TypeTransactionId);
-            return View(transaction);
+            //ViewBag.AccountId = new SelectList(db.Account, "Id", "Name", transaction.AccountId);
+            //ViewBag.CategoryId = new SelectList(db.Category, "Id", "Name", transaction.CategoryId);
+            //ViewBag.TypeTransactionId = new SelectList(db.TypeTransaction, "Id", "Name", transaction.TypeTransactionId);
+            return Json(new { overdraft = overdraft });
         }
 
         

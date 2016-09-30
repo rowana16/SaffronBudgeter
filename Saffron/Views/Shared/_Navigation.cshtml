@@ -15,7 +15,11 @@
 
     ViewBag.displayName = displayName;
     ViewBag.currUser = currUser;
-    ViewBag.Accounts = currUser.Household.Accounts.ToList();
+    if (currUser.Household.Accounts.Count > 0)
+    {
+        ViewBag.Accounts = currUser.Household.Accounts.ToList();
+    }
+
 }
 
 <nav class="navbar-default navbar-static-side" role="navigation">
@@ -45,10 +49,10 @@
             </li>
             <!---------Main Panel---------->
 
-            @if (ViewBag.currUser != null)
+            @if (ViewBag.currUser != null && ViewBag.Accounts != null)
             {
                 <li>
-                    <a href ="@Url.Action("Create", "BankAccounts")"><i class="fa fa-plus btn btn-warning" >   Create New Account</i></a>
+                    <a href="@Url.Action("Create", "BankAccounts")"><i class="fa fa-plus btn btn-warning">   Create New Account</i></a>
                 </li>
 
                 <li class="active">
@@ -255,6 +259,13 @@
                     </ul>
                 </li>*@
 
+            }
+
+            @if (ViewBag.currUser != null && ViewBag.Accounts == null)
+            {
+                <li>
+                    <a href="@Url.Action("Create", "BankAccounts")" style="margin-left: 10px"><i class="fa fa-plus btn btn-warning">   Create a New Account</i></a>
+                </li>                
             }
         </ul>
     </div>

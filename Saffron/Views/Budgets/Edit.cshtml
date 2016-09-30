@@ -13,7 +13,7 @@
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
-                        <h2>Edit Account</h2>
+
                         <div class="ibox-tools">
 
                             <ul class="dropdown-menu dropdown-user">
@@ -28,6 +28,7 @@
                                 <i class="fa fa-times"></i>
                             </a>
                         </div>
+                        <h2>Edit Account</h2>
                     </div>
                     <div class="ibox-content">
                         <div>
@@ -35,8 +36,8 @@
                             {
                                 <input data-val="true" data-val-number="The field Int32 must be a number." data-val-required="The Int32 field is required." id="BudgetId" name="BudgetId" type="hidden" value="@ViewBag.BudgetId">
                                 @Html.HiddenFor(m => Model.BudgetId)
-                                @Html.HiddenFor(m => Model.Id )
-                                
+                                @Html.HiddenFor(m => Model.Id)
+
                                 <table class="table">
                                     <thead>
                                         <tr>

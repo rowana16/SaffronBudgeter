@@ -10,6 +10,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Saffron.Models;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
+using System.Text;
 
 namespace Saffron.Controllers
 {
@@ -145,6 +147,11 @@ namespace Saffron.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public ActionResult StartRegister()
+        {
+            return View();
+        }
         //////////////////////////////////////////////////////////////////////////////////////////////////
 
         public ActionResult ExternalRegister(int Id)
@@ -161,11 +168,40 @@ namespace Saffron.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(string FirstName, string LastName, string Email, string Password)
+        public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            Household createHousehold = new Household();
+            createHousehold.Name = model.LastName;
+            
+            db.Household.Add(createHousehold);
+            db.SaveChanges();
+            IdentityResult result;
 
-            var user = new ApplicationUser { FirstName = FirstName, LastName = LastName, DisplayName = FirstName + " " + LastName, Email = Email, UserName = Email, HeadOfHousehold = true };
-            var result = await UserManager.CreateAsync(user, Password);
+            var user = new ApplicationUser { FirstName = model.FirstName, LastName = model.LastName, DisplayName = model.FirstName + " " + model.LastName, Email = model.Email, UserName = model.Email, HeadOfHousehold = true };
+            createHousehold.Users.Add(user);            
+
+            user.HouseholdId = createHousehold.Id;
+            try
+            {
+                result = await UserManager.CreateAsync(user, model.Password);
+            }
+
+            catch (DbEntityValidationException ex)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (var failure in ex.EntityValidationErrors)
+                {
+                    sb.AppendFormat("{0} failed validation \n", failure.Entry.Entity.GetType());
+                    foreach(var error in failure.ValidationErrors)
+                    {
+                        sb.AppendFormat("- {0} : {1}", error.PropertyName, error.ErrorMessage);
+                        sb.AppendLine();
+                    }
+                }
+                throw new DbEntityValidationException(
+                    "Entity Validation Failed - errors follow: \n" + sb.ToString(), ex);
+            }
+            
             if (result.Succeeded)
             {
                 await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
@@ -176,7 +212,7 @@ namespace Saffron.Controllers
                 // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                 // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Overview", "Home");
             }
 
             else
