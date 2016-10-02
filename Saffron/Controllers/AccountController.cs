@@ -153,7 +153,7 @@ namespace Saffron.Controllers
             return View();
         }
         //////////////////////////////////////////////////////////////////////////////////////////////////
-
+        [AllowAnonymous]
         public ActionResult ExternalRegister(int Id)
         {
             Invitee currInvitee = db.Invitee.Find(Id);
@@ -170,6 +170,10 @@ namespace Saffron.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            if(db.Users.Count(a=>a.Email == model.Email) > 0)
+            {
+                return RedirectToAction("Exists", "Households");
+            }
             Household createHousehold = new Household();
             createHousehold.Name = model.LastName;
             
@@ -246,7 +250,7 @@ namespace Saffron.Controllers
                     db.Entry(currInvitee).State = EntityState.Modified;
                     db.SaveChanges();
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Overview", "Home");
                 }
 
                 else

@@ -163,14 +163,18 @@ namespace Saffron.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Invite (string Email)
         {
+            if(db.Users.Count(a=>a.Email == Email) > 0)
+            {
+                return RedirectToAction("Exists");
+            }
             Invitee newInvitee = new Invitee();
             var apiKey = ConfigurationManager.AppSettings["SendGridAPIKey"];
             var from = ConfigurationManager.AppSettings["ContactEmail"];
             ApplicationUser currUser = db.Users.Find(User.Identity.GetUserId());
             SendGridMessage myMessage = new SendGridMessage();
             myMessage.AddTo(Email);
-            myMessage.From = new System.Net.Mail.MailAddress("DoNotReply@Saffron1.com");
-            myMessage.Subject = "An Invitation From Saffron1: Budgeting and Financial Management";
+            myMessage.From = new System.Net.Mail.MailAddress("DoNotReply@Saffron.com");
+            myMessage.Subject = "An Invitation From Saffron: Budgeting and Financial Management";
            
 
             newInvitee.Email = Email;
@@ -183,7 +187,7 @@ namespace Saffron.Controllers
                 db.Invitee.Add(newInvitee);
                 db.SaveChanges();
                 int Id = newInvitee.Id;                                                                         
-                myMessage.Html = "You have been invited to join " + currUser.DisplayName + "'s household.  Click this link to Register and Join: <a href = \"http://arowan-budgeter.azurewebsites.net/Account/ExternalRegister/ " + Id + "\"> Join the Household </a>";
+                myMessage.Html = "You have been invited to join " + currUser.DisplayName + "'s household.  Click this link to Register and Join: <a href = \"http://arowan-budgeter.azurewebsites.net/Account/ExternalRegister/" + Id + "\"> Join the Household </a>";
                 var transportWeb = new Web(ConfigurationManager.AppSettings["SendGridAPIKey"]);
                 transportWeb.DeliverAsync(myMessage);
                 return RedirectToAction("Overview", "Home");
@@ -194,7 +198,10 @@ namespace Saffron.Controllers
 
         }
 
-
+        public ActionResult Exists ()
+        {
+            return View();
+        }
 
         protected override void Dispose(bool disposing)
         {

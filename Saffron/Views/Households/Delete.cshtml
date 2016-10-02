@@ -1,4 +1,4 @@
-﻿@model Saffron1.Models.Household
+﻿@model Saffron.Models.Household
 @using Microsoft.AspNet.Identity
 @using Microsoft.AspNet.Identity.EntityFramework
 
@@ -11,14 +11,21 @@
 <h3>Are you sure you want to leave this household?</h3>
 <div>
     <hr />
-   
 
-    @using (Html.BeginForm()) {
+
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
+            <div class="form-actions">
+            @if (Model.Users.Count > 1)
+            {
+                <h4>Select User to be Head Of Household:</h4>
+                @Html.DropDownList("HouseholdMembers", null, htmlAttributes: new { @class = "form-control" })
+            }
 
-        <div class="form-actions">
-            <h4>Select User to be Head Of Household:</h4>
-            @Html.DropDownList("HouseholdMembers",null , htmlAttributes: new { @class = "form-control" })
+            
+
+
             <input type="submit" value="Leave Household" class="btn btn-primary" /> |
             @Html.ActionLink("Back to List", "Index", "Home")
         </div>

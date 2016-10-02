@@ -710,6 +710,8 @@
     <Content Include="Views\BankAccounts\CreateError.cshtml" />
     <Content Include="Views\Account\StartRegister.cshtml" />
     <Content Include="Views\Shared\_Footer.cshtml" />
+    <Content Include="Views\Account\ExternalRegister.cshtml" />
+    <Content Include="Views\Households\Exists.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
